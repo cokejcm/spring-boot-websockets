@@ -31,11 +31,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and() // Stateful
-		.anonymous().and() // Allows Authentication Object null (for /login)
-		.authorizeRequests().antMatchers("/**" + Constants.LOGIN_URL).permitAll() // Login
-		.anyRequest().authenticated() // Rest of the requests
-		.and().logout().logoutSuccessUrl("/login?logout")
-		.and().exceptionHandling().accessDeniedPage("/403");
+				.cors().and()
+				.anonymous().and() // Allows Authentication Object null (for /login)
+				.authorizeRequests().antMatchers("/**" + Constants.LOGIN_URL).permitAll() // Login
+				.anyRequest().authenticated() // Rest of the requests
+				.and().logout().logoutSuccessUrl("/login?logout")
+				.and().exceptionHandling().accessDeniedPage("/403");
 	}
 
 	@Override
@@ -64,5 +65,4 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
 }

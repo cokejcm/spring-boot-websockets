@@ -7,7 +7,6 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 
-import com.demo.app.configuration.queue.security.HttpSessionHandshakeInterceptor;
 import com.demo.app.configuration.security.TokenAuthenticationService;
 import com.demo.app.util.Constants;
 
@@ -24,7 +23,6 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint(Constants.ENDPOINT_URL)
-				.addInterceptors(new HttpSessionHandshakeInterceptor())
 				.setAllowedOrigins("*")
 				.withSockJS();
 	}
