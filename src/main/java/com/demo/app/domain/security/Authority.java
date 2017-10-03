@@ -6,28 +6,21 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 @Table(schema = "security", name = "user_authorities")
-@GenericGenerator(name = "string-seq-generator", strategy = "com.demo.app.configuration.StringSequenceIdentifier", parameters = {
-		@org.hibernate.annotations.Parameter(name = "sequence_name", value = "security.authority_seq"),
-		@org.hibernate.annotations.Parameter(name = "sequence_prefix", value = "")
-})
 public class Authority implements Serializable, GrantedAuthority {
 
 	private static final long serialVersionUID = 9171141200000360825L;
 
 	@Id
-	@GeneratedValue(generator = "string-seq-generator")
 	private String id;
 
 	@ManyToOne
