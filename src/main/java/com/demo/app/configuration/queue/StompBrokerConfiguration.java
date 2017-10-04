@@ -33,7 +33,7 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.setApplicationDestinationPrefixes(Constants.CONTEXT);
-		config.enableStompBrokerRelay(Constants.QUEUE_URL)
+		config.enableStompBrokerRelay(Constants.QUEUE_URL, "/exchange")
 				.setRelayHost("192.168.1.37")
 				.setRelayPort(Constants.RABBIT_STOMP_PORT)
 				.setSystemLogin("guest")

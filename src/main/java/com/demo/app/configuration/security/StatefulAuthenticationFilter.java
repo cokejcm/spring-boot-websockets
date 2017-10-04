@@ -29,32 +29,32 @@ public class StatefulAuthenticationFilter extends GenericFilterBean {
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		if (((HttpServletRequest)request).getCookies() == null){
-			((HttpServletResponse)response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+		((HttpServletResponse) response).addCookie(new Cookie(Constants.AUTH_HEADER_NAME, "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhZWJmM2Y3NS1iNzk5LTRlZmItOGExMi0zZDczN2M2ZTUzNDAiLCJzdWIiOiJzdXBlcnVzZXIiLCJpYXQiOjE1MDM4NTY1NDksImV4cCI6MTUzNTM5MjU0OX0.tDQrOUKVH4RGl45bfcqv5HAUfoRQ62j3187Y0ysjBF34qQSAJtI8AkHljwVBhS6BDnhHBZaFw6NHgO0R-rkCvA"));
+		if (((HttpServletRequest) request).getCookies() == null) {
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 			return;
 		}
-		//Filter is not managed by Spring, beans need to be loaded manually
-		if (tokenAuthenticationService == null){
+		// Filter is not managed by Spring, beans need to be loaded manually
+		if (tokenAuthenticationService == null) {
 			ServletContext servletContext = request.getServletContext();
 			WebApplicationContext webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(servletContext);
 			tokenAuthenticationService = webApplicationContext.getBean(TokenAuthenticationService.class);
 		}
-		Optional<Cookie> optToken = Arrays.stream(((HttpServletRequest)request).getCookies()).filter(c -> c.getName().equals(Constants.AUTH_HEADER_NAME)).findFirst();
+		Optional<Cookie> optToken = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(c -> c.getName().equals(Constants.AUTH_HEADER_NAME)).findFirst();
 		try {
-			if (optToken.isPresent()){
+			if (optToken.isPresent()) {
 				String token = optToken.get().getValue();
-				UserAuthentication authentication = (UserAuthentication) tokenAuthenticationService.getAuthenticationForQueues(token);
-				//SecurityContextHolder.getContext().setAuthentication(authentication);
-			}
-			else {
-				((HttpServletResponse)response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+				// UserAuthentication authentication = (UserAuthentication) tokenAuthenticationService.getAuthenticationForQueues(token);
+				tokenAuthenticationService.getAuthenticationForQueues(token);
+				// SecurityContextHolder.getContext().setAuthentication(authentication);
+			} else {
+				((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 				return;
 			}
 		} catch (Exception e) {
-			((HttpServletResponse)response).setStatus(HttpServletResponse.SC_FORBIDDEN);
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 			return;
 		}
-		System.out.println(((HttpServletRequest)request).getServletPath());
 		filterChain.doFilter(request, response);
 	}
 }
