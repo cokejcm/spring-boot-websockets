@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import com.demo.app.service.security.UserService;
 import com.demo.app.util.Constants;
@@ -31,12 +32,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and() // Stateful
-				.cors().and()
-				.anonymous().and() // Allows Authentication Object null (for /login)
-				.authorizeRequests().antMatchers("/**" + Constants.LOGIN_URL).permitAll() // Login
-				.anyRequest().authenticated() // Rest of the requests
-				.and().logout().logoutSuccessUrl("/login?logout")
-				.and().exceptionHandling().accessDeniedPage("/403");
+		.cors().and()
+		.anonymous().and() // Allows Authentication Object null (for /login)
+		.authorizeRequests().antMatchers("/**" + Constants.LOGIN_URL).permitAll() // Login
+		.anyRequest().authenticated() // Rest of the requests
+		.and().logout().logoutSuccessUrl("/login?logout")
+		.and().exceptionHandling().accessDeniedPage("/403").and()
+		.addFilterBefore(new StatefulAuthenticationFilter(), BasicAuthenticationFilter.class); // JWT Filter
 	}
 
 	@Override
