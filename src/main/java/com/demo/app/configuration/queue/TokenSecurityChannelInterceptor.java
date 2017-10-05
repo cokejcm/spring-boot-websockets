@@ -25,7 +25,6 @@ public class TokenSecurityChannelInterceptor extends ChannelInterceptorAdapter i
 	private static final ThreadLocal<Stack<SecurityContext>> ORIGINAL_CONTEXT = new ThreadLocal<>();
 
 	private final SecurityContext EMPTY_CONTEXT;
-	Map<String, List<String>> nativeHeaders;
 
 	@Autowired
 	private TokenAuthenticationService tokenAuthenticationService;
@@ -110,7 +109,7 @@ public class TokenSecurityChannelInterceptor extends ChannelInterceptorAdapter i
 	private String getHeader(Message<?> message, String headerName) {
 		Map<String, List<String>> nativeHeaders = (Map<String, List<String>>) message.getHeaders().get("nativeHeaders");
 		if (nativeHeaders != null && !nativeHeaders.isEmpty()) {
-			return nativeHeaders.get(Constants.AUTH_HEADER_NAME).get(0);
+			return nativeHeaders.get(headerName).get(0);
 		}
 		return null;
 	}
