@@ -33,14 +33,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).and() // Stateful
-		.cors().and()
-		.anonymous().and() // Allows Authentication Object null (for /login)
-		//.authorizeRequests().antMatchers("/**" + Constants.LOGIN_URL).permitAll() // Login
-		.authorizeRequests().antMatchers("/stomp/**").permitAll() // Websocket
-		.anyRequest().authenticated() // Rest of the requests
-		.and().logout().logoutSuccessUrl("/login?logout")
-		.and().exceptionHandling().accessDeniedPage("/403").and()
-		.addFilterBefore(new StatefulAuthenticationFilter(), BasicAuthenticationFilter.class); // JWT Filter
+				.cors().and()
+				.anonymous().and()
+				.authorizeRequests().antMatchers("/stomp/**").permitAll() // Websocket
+				.anyRequest().authenticated() // Rest of the requests
+				.and().logout().logoutSuccessUrl("/login?logout")
+				.and().exceptionHandling().accessDeniedPage("/403").and()
+				.addFilterBefore(new StatefulAuthenticationFilter(), BasicAuthenticationFilter.class); // JWT Filter
 	}
 
 	@Override

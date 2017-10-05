@@ -22,15 +22,14 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	@Autowired
 	private TokenSecurityChannelInterceptor tokenSecurityChannelInterceptor;
 
-
 	/**
 	 * Handshake
 	 */
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry.addEndpoint(Constants.ENDPOINT_URL)
-		.setAllowedOrigins("*")
-		.withSockJS();
+				.setAllowedOrigins("*")
+				.withSockJS();
 	}
 
 	/*
@@ -39,18 +38,18 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.setApplicationDestinationPrefixes(Constants.CONTEXT);
-		config.enableStompBrokerRelay(Constants.QUEUE_URL, "/exchange")
-		.setRelayHost("192.168.1.37")
-		.setRelayPort(Constants.RABBIT_STOMP_PORT)
-		.setSystemLogin("guest")
-		.setSystemPasscode("guest")
-		.setClientLogin("guest")
-		.setClientPasscode("guest");
+		config.enableStompBrokerRelay(Constants.QUEUE_URL, Constants.EXCHANGE_URL)
+				.setRelayHost("192.168.1.37")
+				.setRelayPort(Constants.RABBIT_STOMP_PORT)
+				.setSystemLogin("guest")
+				.setSystemPasscode("guest")
+				.setClientLogin("guest")
+				.setClientPasscode("guest");
 	}
 
 	@Override
 	public void configureClientInboundChannel(ChannelRegistration registration) {
-		registration.setInterceptors(new ChannelInterceptor[]{this.securityContextChannelInterceptor()});
+		registration.setInterceptors(new ChannelInterceptor[] { this.securityContextChannelInterceptor() });
 	}
 
 	@Bean
