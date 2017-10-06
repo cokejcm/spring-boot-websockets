@@ -28,11 +28,12 @@ public class StatefulAuthenticationFilter extends GenericFilterBean {
 	@Autowired
 	private TokenAuthenticationService tokenAuthenticationService;
 
+	private static final String UNAUTHORIZED = "Unauthorized";
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
-		((HttpServletResponse) response).addCookie(new Cookie(Constants.AUTH_HEADER_NAME, "eyJhbGciOiJIUzUxMiJ9.eyJqdGkiOiJhZWJmM2Y3NS1iNzk5LTRlZmItOGExMi0zZDczN2M2ZTUzNDAiLCJzdWIiOiJzdXBlcnVzZXIiLCJpYXQiOjE1MDM4NTY1NDksImV4cCI6MTUzNTM5MjU0OX0.tDQrOUKVH4RGl45bfcqv5HAUfoRQ62j3187Y0ysjBF34qQSAJtI8AkHljwVBhS6BDnhHBZaFw6NHgO0R-rkCvA"));
 		if (((HttpServletRequest) request).getCookies() == null) {
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, UNAUTHORIZED);
 			return;
 		}
 		// Filter is not managed by Spring, beans need to be loaded manually
@@ -48,11 +49,11 @@ public class StatefulAuthenticationFilter extends GenericFilterBean {
 				String token = optToken.get().getValue();
 				authentication = tokenAuthenticationService.getAuthenticationForQueues(token);
 			} else {
-				((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+				((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, UNAUTHORIZED);
 				return;
 			}
 		} catch (Exception e) {
-			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, UNAUTHORIZED);
 			return;
 		}
 		//UserRoleRequestWrapper wraps the original Request with the user from the token
