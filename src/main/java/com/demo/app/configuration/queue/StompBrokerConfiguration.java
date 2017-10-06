@@ -20,7 +20,7 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	@Autowired
 	TokenAuthenticationService tokenAuthenticationService;
 	@Autowired
-	private TokenSecurityChannelInterceptor tokenSecurityChannelInterceptor;
+	private SecurityChannelInterceptor tokenSecurityChannelInterceptor;
 
 	/**
 	 * Handshake
@@ -53,7 +53,7 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	}
 
 	@Bean
-	public TokenSecurityChannelInterceptor securityContextChannelInterceptor() {
+	public SecurityChannelInterceptor securityContextChannelInterceptor() {
 		return tokenSecurityChannelInterceptor;
 	}
 }

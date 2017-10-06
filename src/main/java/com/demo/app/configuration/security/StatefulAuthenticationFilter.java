@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -41,12 +42,11 @@ public class StatefulAuthenticationFilter extends GenericFilterBean {
 			tokenAuthenticationService = webApplicationContext.getBean(TokenAuthenticationService.class);
 		}
 		Optional<Cookie> optToken = Arrays.stream(((HttpServletRequest) request).getCookies()).filter(c -> c.getName().equals(Constants.AUTH_HEADER_NAME)).findFirst();
+		Authentication authentication;
 		try {
 			if (optToken.isPresent()) {
 				String token = optToken.get().getValue();
-				// UserAuthentication authentication = (UserAuthentication) tokenAuthenticationService.getAuthenticationForQueues(token);
-				tokenAuthenticationService.getAuthenticationForQueues(token);
-				// SecurityContextHolder.getContext().setAuthentication(authentication);
+				authentication = tokenAuthenticationService.getAuthenticationForQueues(token);
 			} else {
 				((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 				return;
@@ -55,6 +55,8 @@ public class StatefulAuthenticationFilter extends GenericFilterBean {
 			((HttpServletResponse) response).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
 			return;
 		}
-		filterChain.doFilter(request, response);
+		//UserRoleRequestWrapper wraps the original Request with the user from the token
+		//Makes the Authentication available for the websocket layer
+		filterChain.doFilter(new UserRoleRequestWrapper(authentication, (HttpServletRequest)request), response);
 	}
 }
