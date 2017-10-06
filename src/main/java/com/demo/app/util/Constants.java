@@ -17,12 +17,10 @@ public final class Constants {
 
 	// Server info
 	public static final String HOST = "localhost";
-	public static final String PORT = "9090";
 	public static final int PORT_NUM = 9090;
 	public static final String CONTEXT = "/app";
 
 	// Websockets
-	public static final String TOPIC_URL = "/topic/";
 	public static final String QUEUE_URL = "/queue/";
 	public static final String ENDPOINT_URL = "/stomp";
 	public static final String EXCHANGE_URL = "/exchange";

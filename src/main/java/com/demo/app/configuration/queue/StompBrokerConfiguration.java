@@ -1,6 +1,7 @@
 package com.demo.app.configuration.queue;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -21,6 +22,14 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	TokenAuthenticationService tokenAuthenticationService;
 	@Autowired
 	private SecurityChannelInterceptor tokenSecurityChannelInterceptor;
+	@Value("${spring.rabbitmq.host}")
+	private String rabbitHost;
+	@Value("${spring.rabbitmq.stomp.port}")
+	private int rabbitStompPort;
+	@Value("${spring.rabbitmq.username}")
+	private String rabbitUser;
+	@Value("${spring.rabbitmq.password}")
+	private String rabbitPassword;
 
 	/**
 	 * Handshake
@@ -39,12 +48,12 @@ public class StompBrokerConfiguration extends AbstractWebSocketMessageBrokerConf
 	public void configureMessageBroker(MessageBrokerRegistry config) {
 		config.setApplicationDestinationPrefixes(Constants.CONTEXT);
 		config.enableStompBrokerRelay(Constants.QUEUE_URL, Constants.EXCHANGE_URL)
-				.setRelayHost("192.168.1.37")
-				.setRelayPort(Constants.RABBIT_STOMP_PORT)
-				.setSystemLogin("guest")
-				.setSystemPasscode("guest")
-				.setClientLogin("guest")
-				.setClientPasscode("guest");
+				.setRelayHost(this.rabbitHost)
+				.setRelayPort(this.rabbitStompPort)
+				.setSystemLogin(this.rabbitUser)
+				.setSystemPasscode(this.rabbitPassword)
+				.setClientLogin(this.rabbitUser)
+				.setClientPasscode(this.rabbitPassword);
 	}
 
 	@Override
